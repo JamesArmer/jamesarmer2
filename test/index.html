@@ -22,6 +22,21 @@
     document.head.appendChild(script);
   </script> -->
 
+  <script>
+    function setCookie(name, value, days) {
+      var expires = "";
+      if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+      }
+      document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+
+    // Set a cookie named 'XXXX' with the value 'your_value' that expires in 7 days
+    setCookie('XXXX', 'your_value', 7);
+  </script>
+
   <script src="https://frontend-test.secureprivacy.ai/script/65c9c0308f0e5c2b5f304d52.js"></script>
 
   <!-- Google Tag Manager -->
