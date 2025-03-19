@@ -4,24 +4,23 @@
     <link rel="preconnect" href="https://frontend-test.secureprivacy.ai/" />
 
     <!-- <script>
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const urlCode = urlParams.get('code');
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      const urlCode = urlParams.get("isVideo");
 
-    var scriptCode;
-    if (urlCode === 'AAA') {
-      scriptCode = '65c9c0308f0e5c2b5f304d52';
+      var scriptCode;
+      if (urlCode === true) {
+        scriptCode = "65c9c0308f0e5c2b5f304d64";
+      } else if (urlCode === false) {
+        scriptCode = "65c9b766792c8c27d354d5a1";
+      }
 
-    } else if (urlCode === 'BBB') {
-      scriptCode = '65c9b766792c8c27d354d5a1';
-    }
+      const script = document.createElement("script");
+      script.src = `https://frontend-test.secureprivacy.ai/script/${scriptCode}.js`;
+      document.head.appendChild(script);
+    </script> -->
 
-    const script = document.createElement('script');
-    script.src = `https://frontend-test.secureprivacy.ai/script/${scriptCode}.js`;
-    document.head.appendChild(script);
-  </script> -->
-
-    <!-- <script>
+    <script>
       function setCookie(name, value, days) {
         var expires = "";
         if (days) {
@@ -34,7 +33,7 @@
 
       // Set a cookie named 'XXXX' with the value 'your_value' that expires in 7 days
       setCookie("XXXX", "your_value", 7);
-    </script> -->
+    </script>
 
     <script src="https://frontend-test.secureprivacy.ai/script/65c9c0308f0e5c2b5f304d52.js"></script>
 

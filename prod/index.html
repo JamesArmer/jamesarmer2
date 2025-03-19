@@ -2,7 +2,16 @@
 <html>
   <head>
     <!-- <link rel="preconnect" href="https://app.secureprivacy.ai/" /> -->
+
     <script src="https://app.secureprivacy.ai/script/65f3dc8ebd1ade3fe79cc93d.js"></script>
+
+    <script>
+      let consentData = localStorage.getItem("sp_consent");
+      if (consentData.length > 2) {
+        sp.showCookieBanner();
+      }
+    </script>
+
     <!-- Start Tracking Code for analytics_facebook -->
     <!-- <script>
       !(function (f, b, e, v, n, t, s) {
