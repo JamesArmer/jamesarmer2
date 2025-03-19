@@ -1,44 +1,69 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <script>
+      let consentData = localStorage.getItem("sp_consent");
+      if (consentData.length > 2) {
+        localStorage.removeItem("sp_consent");
+        localStorage.removeItem("sp_dynamic");
+        localStorage.removeItem("s_e_c_u_r_e_k_e_y");
+      }
+    </script>
 
-<head>
-  <!-- Google Tag Manager -->
-  <script>
-    (function (w, d, s, l, i) {
-      w[l] = w[l] || [];
-      w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
-      var f = d.getElementsByTagName(s)[0],
-        j = d.createElement(s),
-        dl = l != "dataLayer" ? "&l=" + l : "";
-      j.async = true;
-      j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
-      f.parentNode.insertBefore(j, f);
-    })(window, document, "script", "dataLayer", "GTM-TX5BG58Q");
-  </script>
-  <!-- End Google Tag Manager -->
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>jamesarmer2</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-</head>
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "GTM-TX5BG58Q");
+    </script>
+    <!-- End Google Tag Manager -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>jamesarmer2</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+  </head>
 
-<body>
-  <!-- Google Tag Manager (noscript) -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TX5BG58Q" height="0" width="0"
-      style="display: none; visibility: hidden"></iframe></noscript>
-  <!-- End Google Tag Manager (noscript) -->
+  <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript
+      ><iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-TX5BG58Q"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+      ></iframe
+    ></noscript>
+    <!-- End Google Tag Manager (noscript) -->
 
-  <h1>Page 2</h1>
-  <button id="clearLocalstorage" onclick="window.localStorage.clear();">
-    clear localstorage
-  </button>
-  <button onclick="window.parent.sp.switchLanguage('fr', 'privacy-banner', true)">change language to FR</button>
-  <div>
-    <iframe width="420" height="315" src="https://www.youtube.com/embed/tgbNymZ7vqY">
-    </iframe>
-  </div>
-  <img width="500" height="500" type="text/plain"
-    src="https://images.pexels.com/photos/2238309/pexels-photo-2238309.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" />
-</body>
-
+    <h1>Page 2</h1>
+    <button id="clearLocalstorage" onclick="window.localStorage.clear();">
+      clear localstorage
+    </button>
+    <button
+      onclick="window.parent.sp.switchLanguage('fr', 'privacy-banner', true)"
+    >
+      change language to FR
+    </button>
+    <div>
+      <iframe
+        width="420"
+        height="315"
+        src="https://www.youtube.com/embed/tgbNymZ7vqY"
+      >
+      </iframe>
+    </div>
+    <img
+      width="500"
+      height="500"
+      type="text/plain"
+      src="https://images.pexels.com/photos/2238309/pexels-photo-2238309.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+    />
+  </body>
 </html>
