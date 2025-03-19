@@ -9,6 +9,8 @@
       let consentData = localStorage.getItem("sp_consent");
       if (consentData.length > 2) {
         localStorage.removeItem("sp_consent");
+        localStorage.removeItem("sp_dynamic");
+        localStorage.removeItem("s_e_c_u_r_e_k_e_y");
       }
     </script>
 
