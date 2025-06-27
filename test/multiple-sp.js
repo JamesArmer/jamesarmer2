@@ -37,12 +37,20 @@ window.reloadSPScript = function (appId, localStorageKey, isPreferenceCenter = f
   // remove the sp_consent from local storage
   localStorage.removeItem("sp_consent");
 
+  let sp_dynamic = JSON.parse(localStorage.getItem("sp_dynamic"));
   if (!isPreferenceCenter) {
     // remove the sp_dynamic cache to load the banner
-    let sp_dynamic = JSON.parse(localStorage.getItem("sp_dynamic"));
     if (!!sp_dynamic) {
       sp_dynamic.saved = false;
       sp_dynamic.data.subConsents = [];
+      localStorage.setItem("sp_dynamic", JSON.stringify(sp_dynamic));
+    }
+  } else {
+    // restore consent for the preference center
+    let sp_consent = localStorage.getItem(localStorageKey);
+    if (!!sp_dynamic && !!sp_consent) {
+      sp_dynamic.saved = true;
+      sp_dynamic.data.subConsents = JSON.parse(sp_consent);
       localStorage.setItem("sp_dynamic", JSON.stringify(sp_dynamic));
     }
   }
