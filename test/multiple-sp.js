@@ -34,6 +34,10 @@ function waitForLocalStorageConsents(callback) {
 }
 
 window.reloadSPScript = function (appId, localStorageKey) {
+  //log params
+  console.log("appId", appId);
+  console.log("localStorageKey", localStorageKey);
+
   // remove the sp_consent from local storage
   localStorage.removeItem("sp_consent");
 
