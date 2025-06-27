@@ -133,9 +133,9 @@
           waitForSp(function () {
             let vppaConsent = localStorage.getItem("sp_vppa_consent");
             if (!!vppaConsent) {
-              sp.showPrivacyBanner();
-            } else {
               sp.openPreferenceCenter();
+            } else {
+              sp.showPrivacyBanner();
             }
           });
         });
@@ -156,9 +156,9 @@
           waitForSp(function () {
             let cookieConsent = localStorage.getItem("sp_cookie_consent");
             if (!!cookieConsent) {
-              sp.showPrivacyBanner();
-            } else {
               sp.openPreferenceCenter();
+            } else {
+              sp.showPrivacyBanner();
             }
           });
         });
