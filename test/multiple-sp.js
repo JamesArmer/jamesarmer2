@@ -60,9 +60,10 @@ window.reloadSPScript = function (appId, localStorageKey) {
   script.async = true;
   document.head.appendChild(script);
 
-  // add event listener to store the vppa consent in local storage
+  // add event listener to store the consent in local storage
   window.addEventListener("sp_cookie_banner_save", function (evt) {
     waitForLocalStorageConsents(function (allGivenConsents) {
+      console.log("local storage key", localStorageKey);
       localStorage.setItem(localStorageKey, allGivenConsents);
     });
   });
