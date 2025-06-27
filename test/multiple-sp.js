@@ -8,6 +8,7 @@ if (!sp_cookie_consent) {
   window.addEventListener("sp_cookie_banner_save", function (evt) {
     waitForLocalStorageConsents(function (allGivenConsents) {
       // store the cookie consents in local storage
+      console.log("allGivenConsents", allGivenConsents);
       localStorage.setItem("sp_cookie_consent", allGivenConsents);
 
       // check if cookie consent has already been set and we are on a vppa page
