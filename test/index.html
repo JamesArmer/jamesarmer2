@@ -131,7 +131,12 @@
 
           // Wait for the Secure Privacy script to load and sp to be available
           waitForSp(function () {
-            sp.openPreferenceCenter();
+            let vppaConsent = localStorage.getItem("sp_vppa_consent");
+            if (!!vppaConsent) {
+              sp.showPrivacyBanner();
+            } else {
+              sp.openPreferenceCenter();
+            }
           });
         });
 
@@ -149,7 +154,12 @@
 
           // Wait for the Secure Privacy script to load and sp to be available
           waitForSp(function () {
-            sp.openPreferenceCenter();
+            let cookieConsent = localStorage.getItem("sp_cookie_consent");
+            if (!!cookieConsent) {
+              sp.showPrivacyBanner();
+            } else {
+              sp.openPreferenceCenter();
+            }
           });
         });
 
