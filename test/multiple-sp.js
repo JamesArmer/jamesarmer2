@@ -50,6 +50,29 @@ window.reloadSPScript = function (appId, localStorageKey, isPreferenceCenter = f
   }, { once: true });
 }
 
+function waitForLocalStorageConsents(callback) {
+  const interval = setInterval(() => {
+    let sp_consent = localStorage.getItem("sp_consent");
+    if (sp_consent) {
+      clearInterval(interval);
+      callback(sp_consent);
+    }
+  }, 100); // check every 100ms
+}
+
+// Helper function to wait for sp to be available
+function waitForSp(callback) {
+  const interval = setInterval(() => {
+    if (
+      typeof sp !== "undefined" &&
+      typeof sp.openPreferenceCenter === "function"
+    ) {
+      clearInterval(interval);
+      callback();
+    }
+  }, 100);
+}
+
 if (!sp_cookie_consent) {
   window.addEventListener("sp_cookie_banner_save", function (evt) {
     waitForLocalStorageConsents(function (allGivenConsents) {
@@ -69,12 +92,49 @@ if (hasVppa && sp_cookie_consent && !sp_vppa_consent) {
   window.reloadSPScript("685e4eac9e69a046b16ab9cc", "sp_vppa_consent", false);
 }
 
-function waitForLocalStorageConsents(callback) {
-  const interval = setInterval(() => {
-    let sp_consent = localStorage.getItem("sp_consent");
-    if (sp_consent) {
-      clearInterval(interval);
-      callback(sp_consent);
-    }
-  }, 100); // check every 100ms
-}
+document
+  .getElementById("vppa-consent-link")
+  .addEventListener("click", function (e) {
+    e.preventDefault();
+
+    // Call reloadSPScript with your desired parameters
+    window.reloadSPScript(
+      "685e4eac9e69a046b16ab9cc",
+      "sp_vppa_consent",
+      true
+    );
+
+    // Wait for the Secure Privacy script to load and sp to be available
+    waitForSp(function () {
+      let vppaConsent = localStorage.getItem("sp_vppa_consent");
+      if (!!vppaConsent) {
+        sp.openPreferenceCenter();
+      } else {
+        sp.showPrivacyBanner();
+      }
+    });
+  });
+
+document
+  .getElementById("cookie-consent-link")
+  .addEventListener("click", function (e) {
+    e.preventDefault();
+
+    // Call reloadSPScript with your desired parameters
+    window.reloadSPScript(
+      "65c9c0308f0e5c2b5f304d52",
+      "sp_cookie_consent",
+      true
+    );
+
+    // Wait for the Secure Privacy script to load and sp to be available
+    waitForSp(function () {
+      let cookieConsent = localStorage.getItem("sp_cookie_consent");
+      if (!!cookieConsent) {
+        sp.openPreferenceCenter();
+      } else {
+        sp.showPrivacyBanner();
+      }
+    });
+  });
+
