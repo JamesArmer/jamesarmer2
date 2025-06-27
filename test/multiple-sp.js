@@ -12,7 +12,7 @@ if (!sp_cookie_consent) {
 
       // check if cookie consent has already been set and we are on a vppa page
       if (hasVppa) {
-        reloadVppaScript();
+        reloadSPScript("685e4eac9e69a046b16ab9cc", "sp_vppa_consent");
       }
     });
   });
@@ -20,7 +20,7 @@ if (!sp_cookie_consent) {
 
 // check if cookie consent has already been set and we are on a vppa page
 if (hasVppa && sp_cookie_consent && !sp_vppa_consent) {
-  reloadVppaScript();
+  reloadSPScript("685e4eac9e69a046b16ab9cc", "sp_vppa_consent");
 }
 
 function waitForLocalStorageConsents(callback) {
@@ -33,7 +33,7 @@ function waitForLocalStorageConsents(callback) {
   }, 100); // check every 100ms
 }
 
-function reloadVppaScript() {
+window.reloadSPScript = function (appId, localStorageKey) {
   // remove the sp_consent from local storage
   localStorage.removeItem("sp_consent");
 
@@ -45,8 +45,8 @@ function reloadVppaScript() {
     localStorage.setItem("sp_dynamic", JSON.stringify(sp_dynamic));
   }
 
-  // change to vppa script
-  window.securePrivacy.appId = "685e4eac9e69a046b16ab9cc";
+  // change the script loaded with the appId
+  window.securePrivacy.appId = appId;
 
   // Remove existing script if present
   const existingScript = document.querySelector('script[src*="secure-privacy-v2.js"]');
@@ -63,7 +63,7 @@ function reloadVppaScript() {
   // add event listener to store the vppa consent in local storage
   window.addEventListener("sp_cookie_banner_save", function (evt) {
     waitForLocalStorageConsents(function (allGivenConsents) {
-      localStorage.setItem("sp_vppa_consent", allGivenConsents);
+      localStorage.setItem(localStorageKey, allGivenConsents);
     });
   });
 }
