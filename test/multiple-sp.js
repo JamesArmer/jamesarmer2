@@ -29,13 +29,20 @@ function waitForLocalStorageConsents(callback) {
       clearInterval(interval);
       callback(sp_consent);
     }
-  }, 500); // check every 500ms
+  }, 100); // check every 100ms
 }
 
 function reloadVppaScript() {
   // remove the sp_consent from local storage
   localStorage.removeItem("sp_consent");
-  localStorage.removeItem("sp_dynamic");
+
+  // remove the sp_dynamic cache to load the banner
+  let sp_dynamic = JSON.parse(localStorage.getItem("sp_dynamic"));
+  if (!!sp_dynamic) {
+    sp_dynamic.saved = false;
+    sp_dynamic.data.subConsents = [];
+    localStorage.setItem("sp_dynamic", JSON.stringify(sp_dynamic));
+  }
 
   // change to vppa script
   window.securePrivacy.appId = "685e4eac9e69a046b16ab9cc";
