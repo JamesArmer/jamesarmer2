@@ -93,7 +93,7 @@ if (hasVppa && sp_cookie_consent && !sp_vppa_consent) {
 }
 
 document
-  .getElementById("vppa-consent-link")
+  .getElementById("vppa-consent-footer-link")
   .addEventListener("click", function (e) {
     e.preventDefault();
 
@@ -116,7 +116,7 @@ document
   });
 
 document
-  .getElementById("cookie-consent-link")
+  .getElementById("cookie-consent-footer-link")
   .addEventListener("click", function (e) {
     e.preventDefault();
 
