@@ -16,7 +16,7 @@ if (!sp_cookie_consent) {
         reloadSPScript("685e4eac9e69a046b16ab9cc", "sp_vppa_consent");
       }
     });
-  });
+  }, { once: true });
 }
 
 // check if cookie consent has already been set and we are on a vppa page
