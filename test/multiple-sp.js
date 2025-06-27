@@ -8,7 +8,6 @@ if (!sp_cookie_consent) {
   window.addEventListener("sp_cookie_banner_save", function (evt) {
     waitForLocalStorageConsents(function (allGivenConsents) {
       // store the cookie consents in local storage
-      console.log("allGivenConsents", allGivenConsents);
       localStorage.setItem("sp_cookie_consent", allGivenConsents);
 
       // check if cookie consent has already been set and we are on a vppa page
@@ -35,10 +34,6 @@ function waitForLocalStorageConsents(callback) {
 }
 
 window.reloadSPScript = function (appId, localStorageKey) {
-  //log params
-  console.log("appId", appId);
-  console.log("localStorageKey", localStorageKey);
-
   // remove the sp_consent from local storage
   localStorage.removeItem("sp_consent");
 
@@ -68,8 +63,7 @@ window.reloadSPScript = function (appId, localStorageKey) {
   // add event listener to store the consent in local storage
   window.addEventListener("sp_cookie_banner_save", function (evt) {
     waitForLocalStorageConsents(function (allGivenConsents) {
-      console.log("local storage key", localStorageKey);
       localStorage.setItem(localStorageKey, allGivenConsents);
     });
-  });
+  }, { once: true });
 }
