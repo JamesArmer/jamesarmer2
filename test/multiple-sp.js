@@ -3,7 +3,7 @@ var urlParams = new URLSearchParams(window.location.search);
 var hasVppa = urlParams.has("vppa");
 
 // check if cookie consent has already been set and we are on a vppa page
-if (hasVppa && sp_consent && sp_consent.length > 0) {
+if (hasVppa && sp_consent && sp_consent.length > 2) {
   // inject vppa script
   var script = document.createElement("script");
   script.src =
