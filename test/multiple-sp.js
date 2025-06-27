@@ -5,22 +5,30 @@ var hasVppa = urlParams.has("vppa");
 
 if (!sp_cookie_consent) {
   window.addEventListener("sp_cookie_banner_save", function (evt) {
-    console.log(evt);
+    waitForAllConsents(function (allGivenConsents) {
+      // store the cookie consents in local storage
+      localStorage.setItem("sp_cookie_consent", allGivenConsents);
 
-    // store the cookie consents in local storage
-    localStorage.setItem("sp_cookie_consent", sp.allGivenConsents);
-
-    // check if cookie consent has already been set and we are on a vppa page
-    if (hasVppa) {
-      console.log("hasVppa");
-      reloadVppaScript();
-    }
+      // check if cookie consent has already been set and we are on a vppa page
+      if (hasVppa) {
+        reloadVppaScript();
+      }
+    });
   });
 }
 
 // check if cookie consent has already been set and we are on a vppa page
 if (hasVppa && sp_cookie_consent) {
   reloadVppaScript();
+}
+
+function waitForAllConsents(callback) {
+  const interval = setInterval(() => {
+    if (typeof sp !== "undefined" && typeof sp.allGivenConsents !== "undefined") {
+      clearInterval(interval);
+      callback(sp.allGivenConsents);
+    }
+  }, 100); // check every 100ms
 }
 
 function reloadVppaScript() {
@@ -44,7 +52,8 @@ function reloadVppaScript() {
 
   // add event listener to store the vppa consent in local storage
   window.addEventListener("sp_cookie_banner_save", function (evt) {
-    console.log(evt);
-    localStorage.setItem("sp_vppa_consent", sp.allGivenConsents);
+    waitForAllConsents(function (allGivenConsents) {
+      localStorage.setItem("sp_vppa_consent", allGivenConsents);
+    });
   });
 }
