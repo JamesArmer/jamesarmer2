@@ -12,7 +12,7 @@ if (!sp_cookie_consent) {
 
       // check if cookie consent has already been set and we are on a vppa page
       if (hasVppa) {
-        reloadSPScript("685e4eac9e69a046b16ab9cc", "sp_vppa_consent", false);
+        window.reloadSPScript("685e4eac9e69a046b16ab9cc", "sp_vppa_consent", false);
       }
     });
   }, { once: true });
@@ -20,7 +20,7 @@ if (!sp_cookie_consent) {
 
 // check if cookie consent has already been set and we are on a vppa page
 if (hasVppa && sp_cookie_consent && !sp_vppa_consent) {
-  reloadSPScript("685e4eac9e69a046b16ab9cc", "sp_vppa_consent", false);
+  window.reloadSPScript("685e4eac9e69a046b16ab9cc", "sp_vppa_consent", false);
 }
 
 function waitForLocalStorageConsents(callback) {
