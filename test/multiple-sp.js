@@ -26,8 +26,11 @@ function waitForLocalStorageConsents(callback) {
   const interval = setInterval(() => {
     let sp_consent = localStorage.getItem("sp_consent");
     if (sp_consent) {
-      clearInterval(interval);
-      callback(sp_consent);
+      // wait 100 ms
+      setTimeout(() => {
+        clearInterval(interval);
+        callback(sp_consent);
+      }, 100);
     }
   }, 100); // check every 100ms
 }
