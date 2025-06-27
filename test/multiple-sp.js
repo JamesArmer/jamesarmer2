@@ -35,9 +35,7 @@ function waitForLocalStorageConsents(callback) {
 function reloadVppaScript() {
   // remove the sp_consent from local storage
   localStorage.removeItem("sp_consent");
-
-  // remove existing sp window object
-  delete window.sp;
+  localStorage.removeItem("sp_dynamic");
 
   // change to vppa script
   window.securePrivacy.appId = "685e4eac9e69a046b16ab9cc";
