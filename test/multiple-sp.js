@@ -25,12 +25,9 @@ if (hasVppa && sp_cookie_consent) {
 function waitForLocalStorageConsents(callback) {
   const interval = setInterval(() => {
     let sp_consent = localStorage.getItem("sp_consent");
-    if (sp_consent) {
-      // wait 200 ms
-      setTimeout(() => {
-        clearInterval(interval);
-        callback(sp_consent);
-      }, 200);
+    if (sp_consent && sp_consent.startsWith('[{"ClientId":')) {
+      clearInterval(interval);
+      callback(sp_consent);
     }
   }, 100); // check every 100ms
 }
