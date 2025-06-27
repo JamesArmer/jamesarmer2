@@ -5,7 +5,7 @@ var hasVppa = urlParams.has("vppa");
 
 if (!sp_cookie_consent) {
   window.addEventListener("sp_cookie_banner_save", function (evt) {
-    waitForAllConsents(function (allGivenConsents) {
+    waitForLocalStorageConsents(function (allGivenConsents) {
       // store the cookie consents in local storage
       localStorage.setItem("sp_cookie_consent", allGivenConsents);
 
@@ -22,11 +22,12 @@ if (hasVppa && sp_cookie_consent) {
   reloadVppaScript();
 }
 
-function waitForAllConsents(callback) {
+function waitForLocalStorageConsents(callback) {
   const interval = setInterval(() => {
-    if (typeof sp !== "undefined" && typeof sp.allGivenConsents !== "undefined") {
+    let sp_consent = localStorage.getItem("sp_consent");
+    if (sp_consent) {
       clearInterval(interval);
-      callback(sp.allGivenConsents);
+      callback(sp_consent);
     }
   }, 100); // check every 100ms
 }
@@ -52,7 +53,7 @@ function reloadVppaScript() {
 
   // add event listener to store the vppa consent in local storage
   window.addEventListener("sp_cookie_banner_save", function (evt) {
-    waitForAllConsents(function (allGivenConsents) {
+    waitForLocalStorageConsents(function (allGivenConsents) {
       localStorage.setItem("sp_vppa_consent", allGivenConsents);
     });
   });
