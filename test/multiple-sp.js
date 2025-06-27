@@ -1,5 +1,6 @@
 var sp_consent = localStorage.getItem("sp_consent");
 var sp_cookie_consent = localStorage.getItem("sp_cookie_consent");
+var sp_vppa_consent = localStorage.getItem("sp_vppa_consent");
 var urlParams = new URLSearchParams(window.location.search);
 var hasVppa = urlParams.has("vppa");
 
@@ -18,7 +19,7 @@ if (!sp_cookie_consent) {
 }
 
 // check if cookie consent has already been set and we are on a vppa page
-if (hasVppa && sp_cookie_consent) {
+if (hasVppa && sp_cookie_consent && !sp_vppa_consent) {
   reloadVppaScript();
 }
 
