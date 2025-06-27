@@ -4,35 +4,6 @@ var sp_vppa_consent = localStorage.getItem("sp_vppa_consent");
 var urlParams = new URLSearchParams(window.location.search);
 var hasVppa = urlParams.has("vppa");
 
-if (!sp_cookie_consent) {
-  window.addEventListener("sp_cookie_banner_save", function (evt) {
-    waitForLocalStorageConsents(function (allGivenConsents) {
-      // store the cookie consents in local storage
-      localStorage.setItem("sp_cookie_consent", allGivenConsents);
-
-      // check if cookie consent has already been set and we are on a vppa page
-      if (hasVppa) {
-        window.reloadSPScript("685e4eac9e69a046b16ab9cc", "sp_vppa_consent", false);
-      }
-    });
-  }, { once: true });
-}
-
-// check if cookie consent has already been set and we are on a vppa page
-if (hasVppa && sp_cookie_consent && !sp_vppa_consent) {
-  window.reloadSPScript("685e4eac9e69a046b16ab9cc", "sp_vppa_consent", false);
-}
-
-function waitForLocalStorageConsents(callback) {
-  const interval = setInterval(() => {
-    let sp_consent = localStorage.getItem("sp_consent");
-    if (sp_consent) {
-      clearInterval(interval);
-      callback(sp_consent);
-    }
-  }, 100); // check every 100ms
-}
-
 window.reloadSPScript = function (appId, localStorageKey, isPreferenceCenter = false) {
   // remove the sp_consent from local storage
   localStorage.removeItem("sp_consent");
@@ -77,4 +48,33 @@ window.reloadSPScript = function (appId, localStorageKey, isPreferenceCenter = f
       localStorage.setItem(localStorageKey, allGivenConsents);
     });
   }, { once: true });
+}
+
+if (!sp_cookie_consent) {
+  window.addEventListener("sp_cookie_banner_save", function (evt) {
+    waitForLocalStorageConsents(function (allGivenConsents) {
+      // store the cookie consents in local storage
+      localStorage.setItem("sp_cookie_consent", allGivenConsents);
+
+      // check if cookie consent has already been set and we are on a vppa page
+      if (hasVppa) {
+        window.reloadSPScript("685e4eac9e69a046b16ab9cc", "sp_vppa_consent", false);
+      }
+    });
+  }, { once: true });
+}
+
+// check if cookie consent has already been set and we are on a vppa page
+if (hasVppa && sp_cookie_consent && !sp_vppa_consent) {
+  window.reloadSPScript("685e4eac9e69a046b16ab9cc", "sp_vppa_consent", false);
+}
+
+function waitForLocalStorageConsents(callback) {
+  const interval = setInterval(() => {
+    let sp_consent = localStorage.getItem("sp_consent");
+    if (sp_consent) {
+      clearInterval(interval);
+      callback(sp_consent);
+    }
+  }, 100); // check every 100ms
 }
