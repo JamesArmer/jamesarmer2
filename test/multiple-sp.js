@@ -33,16 +33,18 @@ function waitForLocalStorageConsents(callback) {
   }, 100); // check every 100ms
 }
 
-window.reloadSPScript = function (appId, localStorageKey) {
+window.reloadSPScript = function (appId, localStorageKey, isPreferenceCenter = false) {
   // remove the sp_consent from local storage
   localStorage.removeItem("sp_consent");
 
-  // remove the sp_dynamic cache to load the banner
-  let sp_dynamic = JSON.parse(localStorage.getItem("sp_dynamic"));
-  if (!!sp_dynamic) {
-    sp_dynamic.saved = false;
-    sp_dynamic.data.subConsents = [];
-    localStorage.setItem("sp_dynamic", JSON.stringify(sp_dynamic));
+  if (!isPreferenceCenter) {
+    // remove the sp_dynamic cache to load the banner
+    let sp_dynamic = JSON.parse(localStorage.getItem("sp_dynamic"));
+    if (!!sp_dynamic) {
+      sp_dynamic.saved = false;
+      sp_dynamic.data.subConsents = [];
+      localStorage.setItem("sp_dynamic", JSON.stringify(sp_dynamic));
+    }
   }
 
   // change the script loaded with the appId
