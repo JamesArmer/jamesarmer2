@@ -5,34 +5,28 @@ var hasVppa = urlParams.has("vppa");
 
 if (!sp_cookie_consent) {
   window.addEventListener("sp_cookie_banner_save", function (evt) {
-    console.log(evt);
-
     // store the cookie consents in local storage
     localStorage.setItem("sp_cookie_consent", sp.allGivenConsents);
 
     // check if cookie consent has already been set and we are on a vppa page
     if (hasVppa) {
-      // remove the sp_consent from local storage
-      localStorage.removeItem("sp_consent");
-
-      // change to vppa script
-      window.securePrivacy.appId = "685e4eac9e69a046b16ab9cc";
-      reloadSecurePrivacyScript();
+      reloadVppaScript();
     }
   });
 }
 
 // check if cookie consent has already been set and we are on a vppa page
 if (hasVppa && sp_cookie_consent) {
+  reloadVppaScript();
+}
+
+function reloadVppaScript() {
   // remove the sp_consent from local storage
   localStorage.removeItem("sp_consent");
 
   // change to vppa script
   window.securePrivacy.appId = "685e4eac9e69a046b16ab9cc";
-  reloadSecurePrivacyScript();
-}
 
-function reloadSecurePrivacyScript() {
   // Remove existing script if present
   const existingScript = document.querySelector('script[src*="secure-privacy-v2.js"]');
   if (existingScript) {
@@ -44,4 +38,9 @@ function reloadSecurePrivacyScript() {
   script.src = "https://test-v2.secureprivacy.ai/secure-privacy-v2.js";
   script.async = true;
   document.head.appendChild(script);
+
+  // add event listener to store the vppa consent in local storage
+  window.addEventListener("sp_cookie_banner_save", function (evt) {
+    localStorage.setItem("sp_vppa_consent", sp.allGivenConsents);
+  });
 }
