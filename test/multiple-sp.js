@@ -1,17 +1,32 @@
 var sp_consent = localStorage.getItem("sp_consent");
+var sp_cookie_consent = localStorage.getItem("sp_cookie_consent");
 var urlParams = new URLSearchParams(window.location.search);
 var hasVppa = urlParams.has("vppa");
 
-window.addEventListener("sp_cookie_banner_save", function (evt) {
-  console.log(evt);
+if (!sp_cookie_consent) {
+  window.addEventListener("sp_cookie_banner_save", function (evt) {
+    console.log(evt);
 
-  // store the cookie consents in a global variable
-  window.cookieConsents = sp.allGivenConsents;
-  console.log(window.cookieConsents);
-});
+    // store the cookie consents in local storage
+    localStorage.setItem("sp_cookie_consent", sp.allGivenConsents);
+
+    // check if cookie consent has already been set and we are on a vppa page
+    if (hasVppa) {
+      // remove the sp_consent from local storage
+      localStorage.removeItem("sp_consent");
+
+      // change to vppa script
+      window.securePrivacy.appId = "685e4eac9e69a046b16ab9cc";
+      reloadSecurePrivacyScript();
+    }
+  });
+}
 
 // check if cookie consent has already been set and we are on a vppa page
-if (hasVppa && sp_consent && sp_consent.length > 2) {
+if (hasVppa && sp_cookie_consent) {
+  // remove the sp_consent from local storage
+  localStorage.removeItem("sp_consent");
+
   // change to vppa script
   window.securePrivacy.appId = "685e4eac9e69a046b16ab9cc";
   reloadSecurePrivacyScript();
