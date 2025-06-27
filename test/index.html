@@ -20,6 +20,8 @@
       document.head.appendChild(script);
     </script> -->
 
+    <script src="https://frontend-test.secureprivacy.ai/script/65c9c0308f0e5c2b5f304d52.js"></script>
+
     <script>
       function setCookie(name, value, days) {
         var expires = "";
@@ -109,5 +111,24 @@
     ></iframe>
 
     <p><a href="/jamesarmer2/test/privacy-policy">Privacy policy</a></p>
+
+    <script>
+      function reloadSecurePrivacyScript(subdomain = "test-v2") {
+        const scriptUrl = `https://${subdomain}.secureprivacy.ai/secure-privacy-v2.js`;
+        // Remove existing script if present
+        const existing = document.querySelector(`script[src="${scriptUrl}"]`);
+        if (existing) {
+          existing.parentNode.removeChild(existing);
+        }
+        // Create and append new script
+        const script = document.createElement("script");
+        script.src = scriptUrl;
+        script.async = true;
+        document.head.appendChild(script);
+      }
+      // Usage example:
+      // reloadSecurePrivacyScript('test-v2');
+      // reloadSecurePrivacyScript('prod-v2');
+    </script>
   </body>
 </html>
