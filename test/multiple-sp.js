@@ -103,3 +103,59 @@ if (sp_cookie_consent && sp_vppa_consent) {
   }
 }
 
+// document
+//   .getElementById("vppa-consent-footer-link")
+//   .addEventListener("click", function (e) {
+//     e.preventDefault();
+
+//     let vppaConsent = localStorage.getItem("sp_vppa_consent");
+//     if (!!vppaConsent) {
+//       // Call reloadSPScript to show the preference center due to vppa consent
+//       window.reloadSPScript(
+//         "685e4eac9e69a046b16ab9cc",
+//         "sp_vppa_consent",
+//         true
+//       );
+
+//       // Wait for the Secure Privacy script to load and sp to be available
+//       waitForSp(function () {
+//         sp.openPreferenceCenter();
+//       });
+//     } else {
+//       // Call reloadSPScript to show the banner due to no vppa consent
+//       window.reloadSPScript(
+//         "685e4eac9e69a046b16ab9cc",
+//         "sp_vppa_consent",
+//         false
+//       );
+
+//       // Wait for the Secure Privacy script to load and sp to be available
+//       waitForSp(function () {
+//         sp.showPrivacyBanner();
+//       });
+//     }
+//   });
+
+// document
+//   .getElementById("cookie-consent-footer-link")
+//   .addEventListener("click", function (e) {
+//     e.preventDefault();
+
+//     // Call reloadSPScript with your desired parameters
+//     window.reloadSPScript(
+//       "65c9c0308f0e5c2b5f304d52",
+//       "sp_cookie_consent",
+//       true
+//     );
+
+//     // Wait for the Secure Privacy script to load and sp to be available
+//     waitForSp(function () {
+//       let cookieConsent = localStorage.getItem("sp_cookie_consent");
+//       if (!!cookieConsent) {
+//         sp.openPreferenceCenter();
+//       } else {
+//         sp.showPrivacyBanner();
+//       }
+//     });
+//   });
+
