@@ -139,6 +139,7 @@
             if (!!vppaConsent) {
               sp.openPreferenceCenter();
             } else {
+              localStorage.removeItem("sp_consent");
               sp.showPrivacyBanner();
             }
           });
