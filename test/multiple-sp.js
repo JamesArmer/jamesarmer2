@@ -98,7 +98,7 @@ if (sp_cookie_consent && sp_vppa_consent) {
     window.reloadSPScript(
       "65c9c0308f0e5c2b5f304d52",
       "sp_cookie_consent",
-      false
+      true
     );
   }
 }
