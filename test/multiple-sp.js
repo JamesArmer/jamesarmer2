@@ -92,10 +92,14 @@ if (hasVppa && sp_cookie_consent && !sp_vppa_consent) {
   window.reloadSPScript("685e4eac9e69a046b16ab9cc", "sp_vppa_consent", false);
 }
 
-// set sp_consent to the cookie consent to prevent the banner from showing again
+// set the banner to the cookie script to prevent the banner from showing again
 if (sp_cookie_consent && sp_vppa_consent) {
   if (sp_consent != sp_cookie_consent) {
-    localStorage.setItem("sp_consent", sp_cookie_consent);
+    window.reloadSPScript(
+      "65c9c0308f0e5c2b5f304d52",
+      "sp_cookie_consent",
+      false
+    );
   }
 }
 
