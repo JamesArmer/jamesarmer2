@@ -80,7 +80,7 @@ if (!sp_cookie_consent) {
       localStorage.setItem("sp_cookie_consent", allGivenConsents);
 
       // check if cookie consent has already been set and we are on a vppa page
-      if (hasVppa) {
+      if (hasVppa && !sp_vppa_consent) {
         window.reloadSPScript("685e4eac9e69a046b16ab9cc", "sp_vppa_consent", false);
       }
     });
@@ -90,6 +90,13 @@ if (!sp_cookie_consent) {
 // check if cookie consent has already been set and we are on a vppa page
 if (hasVppa && sp_cookie_consent && !sp_vppa_consent) {
   window.reloadSPScript("685e4eac9e69a046b16ab9cc", "sp_vppa_consent", false);
+}
+
+// set sp_consent to the cookie consent to prevent the banner from showing again
+if (sp_cookie_consent && sp_vppa_consent) {
+  if (sp_consent != sp_cookie_consent) {
+    localStorage.setItem("sp_consent", sp_cookie_consent);
+  }
 }
 
 document
