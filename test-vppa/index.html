@@ -23,28 +23,6 @@
     <script src="https://frontend-test.secureprivacy.ai/script/65c9c0308f0e5c2b5f304d52.js"></script>
 
     <script>
-      (function (w, d, t, r, u) {
-        var f, n, i;
-        (w[u] = w[u] || []),
-          (f = function () {
-            var o = { ti: "97192158", enableAutoSpaTracking: true };
-            (o.q = w[u]), (w[u] = new UET(o)), w[u].push("pageLoad");
-          }),
-          (n = d.createElement(t)),
-          (n.src = r),
-          (n.async = 1),
-          (n.onload = n.onreadystatechange =
-            function () {
-              var s = this.readyState;
-              (s && s !== "loaded" && s !== "complete") ||
-                (f(), (n.onload = n.onreadystatechange = null));
-            }),
-          (i = d.getElementsByTagName(t)[0]),
-          i.parentNode.insertBefore(n, i);
-      })(window, document, "script", "//bat.bing.com/bat.js", "uetq");
-    </script>
-
-    <script>
       function setCookie(name, value, days) {
         var expires = "";
         if (days) {
@@ -58,6 +36,8 @@
       // Set a cookie named 'XXXX' with the value 'your_value' that expires in 7 days
       setCookie("XXXX", "your_value", 7);
     </script>
+
+    <script src="multiple-sp.js"></script>
 
     <!-- Google Tag Manager -->
     <!-- <script>
@@ -131,5 +111,71 @@
     ></iframe>
 
     <p><a href="/jamesarmer2/test/privacy-policy">Privacy policy</a></p>
+    <p>
+      <a style="cursor: pointer" id="vppa-consent-footer-link">VPPA Consent</a>
+    </p>
+    <p>
+      <a style="cursor: pointer" id="cookie-consent-footer-link"
+        >Cookie Consent</a
+      >
+    </p>
+
+    <script>
+      document
+        .getElementById("vppa-consent-footer-link")
+        .addEventListener("click", function (e) {
+          e.preventDefault();
+
+          let vppaConsent = localStorage.getItem("sp_vppa_consent");
+          if (!!vppaConsent) {
+            // Call reloadSPScript to show the preference center due to vppa consent
+            window.reloadSPScript(
+              "685e4eac9e69a046b16ab9cc",
+              "sp_vppa_consent",
+              true
+            );
+
+            // Wait for the Secure Privacy script to load and sp to be available
+            waitForSp(function () {
+              sp.openPreferenceCenter();
+            });
+          } else {
+            // Call reloadSPScript to show the banner due to no vppa consent
+            window.reloadSPScript(
+              "685e4eac9e69a046b16ab9cc",
+              "sp_vppa_consent",
+              false
+            );
+
+            // Wait for the Secure Privacy script to load and sp to be available
+            waitForSp(function () {
+              sp.showPrivacyBanner();
+            });
+          }
+        });
+
+      document
+        .getElementById("cookie-consent-footer-link")
+        .addEventListener("click", function (e) {
+          e.preventDefault();
+
+          // Call reloadSPScript with your desired parameters
+          window.reloadSPScript(
+            "65c9c0308f0e5c2b5f304d52",
+            "sp_cookie_consent",
+            true
+          );
+
+          // Wait for the Secure Privacy script to load and sp to be available
+          waitForSp(function () {
+            let cookieConsent = localStorage.getItem("sp_cookie_consent");
+            if (!!cookieConsent) {
+              sp.openPreferenceCenter();
+            } else {
+              sp.showPrivacyBanner();
+            }
+          });
+        });
+    </script>
   </body>
 </html>
