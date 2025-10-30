@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <script>
+      // Set GTM default consent to denied before container loads
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+
+      gtag("consent", "default", {
+        ad_storage: "denied",
+        analytics_storage: "denied",
+        functionality_storage: "denied",
+        personalization_storage: "denied",
+        security_storage: "denied",
+      });
+    </script>
     <!-- <link rel="preconnect" href="https://frontend-test.secureprivacy.ai/" /> -->
 
     <!-- <script>
