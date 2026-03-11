@@ -203,6 +203,11 @@ body {
 
 .plyr {
   border-radius: 16px;
+  --plyr-color-main: #15803d;
+  --plyr-video-background: #0f172a;
+  --plyr-badge-background: #15803d;
+  --plyr-badge-text-color: #fff;
+  --plyr-range-thumb-background: #fff;
 }
 
 /* ── FEATURES GRID ── */
