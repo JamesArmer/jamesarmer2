@@ -4,6 +4,17 @@ var sp_vppa_consent = localStorage.getItem("sp_vppa_consent");
 var urlParams = new URLSearchParams(window.location.search);
 var hasVppa = urlParams.has("vppa");
 
+// App IDs
+var COOKIE_CONSENT_APP_ID = "65c9c0308f0e5c2b5f304d52";
+var VPPA_CONSENT_APP_ID = "685e4eac9e69a046b16ab9cc";
+
+function loadSPScript(appId) {
+  var script = document.createElement("script");
+  script.src = "https://frontend-test.secureprivacy.ai/script/" + appId + ".js";
+  script.async = true;
+  document.head.appendChild(script);
+}
+
 window.reloadSPScript = function (appId, localStorageKey, isPreferenceCenter = false) {
   // remove the sp_consent from local storage
   localStorage.removeItem("sp_consent");
@@ -28,22 +39,23 @@ window.reloadSPScript = function (appId, localStorageKey, isPreferenceCenter = f
   }
 
   // change the script loaded with the appId
-  window.securePrivacy.appId = appId;
+  window.securePrivacy = { appId };
 
-  // Remove existing script if present
-  const existingScript = document.querySelector('script[src*="secure-privacy-v2.js"]');
-  if (existingScript) {
-    existingScript.parentNode.removeChild(existingScript);
-  }
+  // Remove existing SP scripts to force a full reinitialisation.
+  // Without this, the previously loaded SP instance stays active in memory
+  // and won't show a new banner even though localStorage has been reset.
+  const existingScripts = document.querySelectorAll(
+    'script[src*="secureprivacy.ai"]'
+  );
+  existingScripts.forEach(function (s) {
+    s.parentNode.removeChild(s);
+  });
 
-  // Create and append new script
-  const script = document.createElement("script");
-  script.src = "https://test-v2.secureprivacy.ai/secure-privacy-v2.js";
-  script.async = true;
-  document.head.appendChild(script);
+  // Load a fresh SP script with the new appId
+  loadSPScript(appId);
 
   // add event listener to store the consent in local storage
-  window.addEventListener("sp_cookie_banner_save", function (evt) {
+  window.addEventListener("sp_cookie_banner_save", function () {
     waitForLocalStorageConsents(function (allGivenConsents) {
       localStorage.setItem(localStorageKey, allGivenConsents);
     });
@@ -73,15 +85,18 @@ function waitForSp(callback) {
   }, 100);
 }
 
+// Load the initial cookie consent script if no cookie consent yet
 if (!sp_cookie_consent) {
-  window.addEventListener("sp_cookie_banner_save", function (evt) {
+  loadSPScript(COOKIE_CONSENT_APP_ID);
+
+  window.addEventListener("sp_cookie_banner_save", function () {
     waitForLocalStorageConsents(function (allGivenConsents) {
       // store the cookie consents in local storage
       localStorage.setItem("sp_cookie_consent", allGivenConsents);
 
       // check if cookie consent has already been set and we are on a vppa page
       if (hasVppa && !sp_vppa_consent) {
-        window.reloadSPScript("685e4eac9e69a046b16ab9cc", "sp_vppa_consent", false);
+        window.reloadSPScript(VPPA_CONSENT_APP_ID, "sp_vppa_consent", false);
       }
     });
   }, { once: true });
@@ -89,73 +104,16 @@ if (!sp_cookie_consent) {
 
 // check if cookie consent has already been set and we are on a vppa page
 if (hasVppa && sp_cookie_consent && !sp_vppa_consent) {
-  window.reloadSPScript("685e4eac9e69a046b16ab9cc", "sp_vppa_consent", false);
+  window.reloadSPScript(VPPA_CONSENT_APP_ID, "sp_vppa_consent", false);
 }
 
 // set the banner to the cookie script to prevent the banner from showing again
 if (sp_cookie_consent && sp_vppa_consent) {
   if (sp_consent != sp_cookie_consent) {
     window.reloadSPScript(
-      "65c9c0308f0e5c2b5f304d52",
+      COOKIE_CONSENT_APP_ID,
       "sp_cookie_consent",
       true
     );
   }
 }
-
-// document
-//   .getElementById("vppa-consent-footer-link")
-//   .addEventListener("click", function (e) {
-//     e.preventDefault();
-
-//     let vppaConsent = localStorage.getItem("sp_vppa_consent");
-//     if (!!vppaConsent) {
-//       // Call reloadSPScript to show the preference center due to vppa consent
-//       window.reloadSPScript(
-//         "685e4eac9e69a046b16ab9cc",
-//         "sp_vppa_consent",
-//         true
-//       );
-
-//       // Wait for the Secure Privacy script to load and sp to be available
-//       waitForSp(function () {
-//         sp.openPreferenceCenter();
-//       });
-//     } else {
-//       // Call reloadSPScript to show the banner due to no vppa consent
-//       window.reloadSPScript(
-//         "685e4eac9e69a046b16ab9cc",
-//         "sp_vppa_consent",
-//         false
-//       );
-
-//       // Wait for the Secure Privacy script to load and sp to be available
-//       waitForSp(function () {
-//         sp.showPrivacyBanner();
-//       });
-//     }
-//   });
-
-// document
-//   .getElementById("cookie-consent-footer-link")
-//   .addEventListener("click", function (e) {
-//     e.preventDefault();
-
-//     // Call reloadSPScript with your desired parameters
-//     window.reloadSPScript(
-//       "65c9c0308f0e5c2b5f304d52",
-//       "sp_cookie_consent",
-//       true
-//     );
-
-//     // Wait for the Secure Privacy script to load and sp to be available
-//     waitForSp(function () {
-//       let cookieConsent = localStorage.getItem("sp_cookie_consent");
-//       if (!!cookieConsent) {
-//         sp.openPreferenceCenter();
-//       } else {
-//         sp.showPrivacyBanner();
-//       }
-//     });
-//   });
-
