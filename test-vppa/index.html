@@ -66,7 +66,11 @@
   <body>
     <h1>Page 1</h1>
 
-    <p>Link to <a href="/jamesarmer2/test/page2">page 2</a></p>
+    <p>Link to <a href="/jamesarmer2/test-vppa/page2.html?vppa">page 2 (video/VPPA page)</a></p>
+
+    <button id="clearLocalstorage" onclick="window.localStorage.clear(); alert('localStorage cleared');">
+      Clear localStorage
+    </button>
 
     <!-- <button id="clearLocalstorage" onclick="window.localStorage.clear();">
       clear localstorage
@@ -119,6 +123,25 @@
         >Cookie Consent</a
       >
     </p>
+
+    <p>
+      <strong>localStorage state:</strong>
+    </p>
+    <pre id="storage-state"></pre>
+
+    <script>
+      function updateStorageDisplay() {
+        const keys = ["sp_consent", "sp_cookie_consent", "sp_vppa_consent", "sp_dynamic"];
+        const state = {};
+        keys.forEach(key => {
+          const val = localStorage.getItem(key);
+          state[key] = val ? JSON.parse(val) : null;
+        });
+        document.getElementById("storage-state").textContent = JSON.stringify(state, null, 2);
+      }
+      updateStorageDisplay();
+      setInterval(updateStorageDisplay, 1000);
+    </script>
 
     <script>
       document
