@@ -56,15 +56,11 @@ window.reloadSPScript = function (appId, localStorageKey, isPreferenceCenter = f
     }
 
   } else {
-    // remove the sp_dynamic cache to load the banner
-    if (!!sp_dynamic) {
-      sp_dynamic.saved = false;
-      sp_dynamic.data.subConsents = [];
-      localStorage.setItem("sp_dynamic", JSON.stringify(sp_dynamic));
-      console.log("[SP] reloadSPScript: reset sp_dynamic for fresh banner");
-    } else {
-      console.log("[SP] reloadSPScript: no sp_dynamic found to reset");
-    }
+    // Fully remove sp_dynamic so the SP library starts with a clean slate.
+    // Partially resetting (saved/subConsents) is no longer sufficient — the SP
+    // library now checks additional fields (e.g. "c") to determine consent state.
+    localStorage.removeItem("sp_dynamic");
+    console.log("[SP] reloadSPScript: removed sp_dynamic entirely for fresh banner");
   }
 
   // change the script loaded with the appId
