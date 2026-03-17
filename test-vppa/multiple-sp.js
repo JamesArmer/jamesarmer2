@@ -83,9 +83,22 @@ window.reloadSPScript = function (appId, localStorageKey, isPreferenceCenter = f
     s.parentNode.removeChild(s);
   });
 
-  // Load a fresh SP script with the new appId
-  console.log("[SP] reloadSPScript: loading fresh script for appId:", appId);
-  loadSPScript(appId);
+  // Load the core SP library directly (not the app-specific bootstrap script).
+  // The app-specific script is only for initial page load — on reload, window.securePrivacy
+  // already has the config so we just need the core library to reinitialise with it.
+  var coreScriptUrl = "https://test-v2.secureprivacy.ai/secure-privacy-v2.js";
+  console.log("[SP] reloadSPScript: loading core SP library:", coreScriptUrl);
+  var script = document.createElement("script");
+  script.src = coreScriptUrl;
+  script.async = true;
+  script.onload = function () {
+    console.log("[SP] reloadSPScript: core library loaded");
+    console.log("[SP] reloadSPScript: window.sp =", window.sp);
+  };
+  script.onerror = function (err) {
+    console.error("[SP] reloadSPScript: FAILED to load core library", err);
+  };
+  document.head.appendChild(script);
 
   // add event listener to store the consent in local storage
   window.addEventListener("sp_cookie_banner_save", function () {
