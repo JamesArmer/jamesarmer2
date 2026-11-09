@@ -1,4 +1,3 @@
-var sp_consent = localStorage.getItem("sp_consent");
 var sp_cookie_consent = localStorage.getItem("sp_cookie_consent");
 var sp_vppa_consent = localStorage.getItem("sp_vppa_consent");
 var urlParams = new URLSearchParams(window.location.search);
@@ -8,8 +7,14 @@ var hasVppa = urlParams.has("vppa");
 var COOKIE_CONSENT_APP_ID = "65c9c0308f0e5c2b5f304d52";
 var VPPA_CONSENT_APP_ID = "685e4eac9e69a046b16ab9cc";
 
+// Since 8712 the SP banner stores sp_consent, sp_dynamic, sp_expiry, sp_counted,
+// sp_consents, TCString and GPPString per app as "<name>:<appId>", where appId is
+// window.securePrivacy.appId. Each app ID now keeps its own state on the same host.
+function spKey(name, appId) {
+  return name + ":" + appId;
+}
+
 console.log("[SP] Init state:", {
-  sp_consent: sp_consent,
   sp_cookie_consent: sp_cookie_consent,
   sp_vppa_consent: sp_vppa_consent,
   hasVppa: hasVppa,
@@ -34,34 +39,12 @@ function loadSPScript(appId) {
   document.head.appendChild(script);
 }
 
-window.reloadSPScript = function (appId, localStorageKey, isPreferenceCenter = false) {
-  console.log("[SP] reloadSPScript called:", { appId, localStorageKey, isPreferenceCenter });
+window.reloadSPScript = function (appId, localStorageKey) {
+  console.log("[SP] reloadSPScript called:", { appId, localStorageKey });
 
-  // remove the sp_consent from local storage
-  localStorage.removeItem("sp_consent");
-
-  let sp_dynamic = JSON.parse(localStorage.getItem("sp_dynamic"));
-  console.log("[SP] reloadSPScript: sp_dynamic before modify:", JSON.stringify(sp_dynamic));
-
-  if (isPreferenceCenter) {
-    // restore consent for the preference center
-    let sp_consent = localStorage.getItem(localStorageKey);
-    if (!!sp_dynamic && !!sp_consent) {
-      sp_dynamic.saved = true;
-      sp_dynamic.data.subConsents = JSON.parse(sp_consent);
-      localStorage.setItem("sp_dynamic", JSON.stringify(sp_dynamic));
-      console.log("[SP] reloadSPScript: restored preference center consent");
-    } else {
-      console.log("[SP] reloadSPScript: skipped preference center restore — sp_dynamic:", !!sp_dynamic, "sp_consent:", !!sp_consent);
-    }
-
-  } else {
-    // Fully remove sp_dynamic so the SP library starts with a clean slate.
-    // Partially resetting (saved/subConsents) is no longer sufficient — the SP
-    // library now checks additional fields (e.g. "c") to determine consent state.
-    localStorage.removeItem("sp_dynamic");
-    console.log("[SP] reloadSPScript: removed sp_dynamic entirely for fresh banner");
-  }
+  // No clearing or restoring of sp_consent / sp_dynamic is needed any more:
+  // each app ID has its own scoped keys, so swapping scripts leaves the other
+  // app's consent untouched. Clearing them here would wipe that app's consent.
 
   // change the script loaded with the appId
   window.securePrivacy = { appId };
@@ -99,20 +82,24 @@ window.reloadSPScript = function (appId, localStorageKey, isPreferenceCenter = f
   // add event listener to store the consent in local storage
   window.addEventListener("sp_cookie_banner_save", function () {
     console.log("[SP] sp_cookie_banner_save fired (from reloadSPScript listener)");
-    waitForLocalStorageConsents(function (allGivenConsents) {
+    waitForLocalStorageConsents(appId, function (allGivenConsents) {
       localStorage.setItem(localStorageKey, allGivenConsents);
       console.log("[SP] stored consent in", localStorageKey);
     });
   }, { once: true });
 }
 
-function waitForLocalStorageConsents(callback) {
-  console.log("[SP] waitForLocalStorageConsents: polling...");
+// Only call this after sp_cookie_banner_save: the banner writes "[]" to
+// sp_consent:<appId> on load, before any choice, and writes the real consent
+// just before firing the event.
+function waitForLocalStorageConsents(appId, callback) {
+  var key = spKey("sp_consent", appId);
+  console.log("[SP] waitForLocalStorageConsents: polling", key);
   const interval = setInterval(() => {
-    let sp_consent = localStorage.getItem("sp_consent");
+    let sp_consent = localStorage.getItem(key);
     if (sp_consent) {
       clearInterval(interval);
-      console.log("[SP] waitForLocalStorageConsents: found sp_consent");
+      console.log("[SP] waitForLocalStorageConsents: found", key);
       callback(sp_consent);
     }
   }, 100); // check every 100ms
@@ -140,7 +127,7 @@ if (!sp_cookie_consent) {
 
   window.addEventListener("sp_cookie_banner_save", function () {
     console.log("[SP] sp_cookie_banner_save fired (from initial consent listener)");
-    waitForLocalStorageConsents(function (allGivenConsents) {
+    waitForLocalStorageConsents(COOKIE_CONSENT_APP_ID, function (allGivenConsents) {
       // store the cookie consents in local storage
       localStorage.setItem("sp_cookie_consent", allGivenConsents);
       console.log("[SP] stored sp_cookie_consent");
@@ -148,7 +135,7 @@ if (!sp_cookie_consent) {
       // check if cookie consent has already been set and we are on a vppa page
       if (hasVppa && !sp_vppa_consent) {
         console.log("[SP] On VPPA page after cookie consent — reloading for VPPA");
-        window.reloadSPScript(VPPA_CONSENT_APP_ID, "sp_vppa_consent", false);
+        window.reloadSPScript(VPPA_CONSENT_APP_ID, "sp_vppa_consent");
       }
     });
   }, { once: true });
@@ -159,23 +146,19 @@ if (!sp_cookie_consent) {
 // check if cookie consent has already been set and we are on a vppa page
 if (hasVppa && sp_cookie_consent && !sp_vppa_consent) {
   console.log("[SP] VPPA page with cookie consent but no VPPA consent — reloading for VPPA");
-  window.reloadSPScript(VPPA_CONSENT_APP_ID, "sp_vppa_consent", false);
+  window.reloadSPScript(VPPA_CONSENT_APP_ID, "sp_vppa_consent");
 } else {
   console.log("[SP] VPPA reload check skipped:", { hasVppa, sp_cookie_consent: !!sp_cookie_consent, sp_vppa_consent: !!sp_vppa_consent });
 }
 
-// set the banner to the cookie script to prevent the banner from showing again
+// Both consents given: load the cookie script so the widget / preference centre
+// and script blocking work. Its consent is still in sp_consent:<cookieAppId> and
+// sp_dynamic:<cookieAppId>, so no banner is shown and nothing needs restoring.
+// (Previously this compared the unscoped sp_consent with sp_cookie_consent and
+// loaded nothing when they matched.)
 if (sp_cookie_consent && sp_vppa_consent) {
-  if (sp_consent != sp_cookie_consent) {
-    console.log("[SP] Both consents exist but sp_consent differs — restoring cookie consent script");
-    window.reloadSPScript(
-      COOKIE_CONSENT_APP_ID,
-      "sp_cookie_consent",
-      true
-    );
-  } else {
-    console.log("[SP] Both consents exist and sp_consent matches — no action needed");
-  }
+  console.log("[SP] Both consents exist — loading cookie consent script");
+  loadSPScript(COOKIE_CONSENT_APP_ID);
 } else {
   console.log("[SP] Both-consents check skipped:", { sp_cookie_consent: !!sp_cookie_consent, sp_vppa_consent: !!sp_vppa_consent });
 }
